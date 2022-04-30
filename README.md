@@ -1,1 +1,1 @@
-# Universal-Magic-Waker
+# Universal Magic Waker
