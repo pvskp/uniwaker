@@ -6,42 +6,48 @@ import (
 	"os"
 	"os/exec"
 	"strings"
-	// "sync"
+	"sync"
+	"github.com/mostlygeek/arp"
 )
 
-// func main() {
-// 	// Get the local IP address
-// 	ip := getLocalNetworkIP()
+type FoundDevices struct {
+  ip string
+  macAddress string
+}
 
-// 	// Get the IP subnet by removing the last octet of the IP address
-//   fmt.Println(ip)
-// 	subnet := getSubnet(ip)
+func GetDevices() []FoundDevices {
+	// Get the local IP address
+	ip := getLocalNetworkIP()
 
-// 	// Create a wait group to synchronize the goroutines
-// 	var wg sync.WaitGroup
+	// Get the IP subnet by removing the last octet of the IP address
+  fmt.Println(ip)
+	subnet := getSubnet(ip)
 
-// 	// Iterate through all possible IP addresses in the subnet
-// 	for i := 1; i < 255; i++ {
-// 		wg.Add(1)
-// 		go func(i int) {
-// 			defer wg.Done()
+	// Create a wait group to synchronize the goroutines
+	var wg sync.WaitGroup
 
-// 			// Construct the IP address
-// 			ip := fmt.Sprintf("%s.%d", subnet, i)
+	// Iterate through all possible IP addresses in the subnet
+	for i := 1; i < 255; i++ {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
 
-// 			// Ping the IP address to check if it's online
-//       if ip != "nil" {
-//         if ping(ip) {
-//           fmt.Println("Device found:", ip)
-//           // fmt.Print(getVendor(ip))
-//         }
-//       }
-// 		}(i)
-// 	}
+			// Construct the IP address
+			ip := fmt.Sprintf("%s.%d", subnet, i)
 
-// 	// Wait for all goroutines to finish
-// 	wg.Wait()
-// }
+			// Ping the IP address to check if it's online
+      if ip != "nil" {
+        if ping(ip) {
+          fmt.Println("Device found:", ip)
+          fmt.Println("MacAddress found:", arp.Search(ip))
+        }
+      }
+		}(i)
+	}
+
+	// Wait for all goroutines to finish
+	wg.Wait()
+}
 
 // getLocalNetworkIP retrieves the local IPv4 address of the network interface that is currently up and not a loopback interface.
 // It returns the IPv4 address as a string, or an empty string if no valid IPv4 address is found.
@@ -97,6 +103,7 @@ func getSubnet(ip string) string {
 	// Join the remaining parts by dot
 	return strings.Join(parts, ".")
 }
+
 // ping sends an ICMP Echo Request (ping) packet to the specified IPv4 address and waits for a response.
 // It takes an IPv4 address as input in the format "x.x.x.x" and returns a boolean value indicating whether
 // the address responded to the ping (true) or not (false).
