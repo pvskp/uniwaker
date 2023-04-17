@@ -43,7 +43,8 @@ import (
 // 	wg.Wait()
 // }
 
-
+// getLocalNetworkIP retrieves the local IPv4 address of the network interface that is currently up and not a loopback interface.
+// It returns the IPv4 address as a string, or an empty string if no valid IPv4 address is found.
 func getLocalNetworkIP() string {
 	// Get all network interfaces
 	interfaces, err := net.Interfaces()
@@ -84,6 +85,8 @@ func getLocalNetworkIP() string {
   return ""
 }
 
+// getSubnet takes an IPv4 address as input and returns the subnet address by removing the last octet.
+// It receives an IPv4 address as a string in the format "x.x.x.x" and returns the subnet address as a string in the format "x.x.x".
 func getSubnet(ip string) string {
 	// Split the IP address by dot
 	parts := strings.Split(ip, ".")
@@ -94,7 +97,9 @@ func getSubnet(ip string) string {
 	// Join the remaining parts by dot
 	return strings.Join(parts, ".")
 }
-
+// ping sends an ICMP Echo Request (ping) packet to the specified IPv4 address and waits for a response.
+// It takes an IPv4 address as input in the format "x.x.x.x" and returns a boolean value indicating whether
+// the address responded to the ping (true) or not (false).
 func ping(ip string) bool {
 	// Run the "ping" command with a timeout of 1 second
 	cmd := exec.Command("ping", "-c", "1", "-W", "1", ip)
