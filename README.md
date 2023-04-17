@@ -1,5 +1,5 @@
-# Uniwaker
-Uniwaker aims to identify devices on a network and provide a TUI (Text User Interface) visualization for sending a Magic Packet, allowing waking up devices that support Wake-on-LAN (WoL) feature.
+# uniwaker
+uniwaker aims to identify devices on a network and provide a TUI (Text User Interface) visualization for sending a Magic Packet, allowing waking up devices that support Wake-on-LAN (WoL) feature.
 
 ## Features
   * Scan the network for connected devices.
@@ -9,7 +9,7 @@ Uniwaker aims to identify devices on a network and provide a TUI (Text User Inte
   * Cross-platform compatibility.
 
 ## Contributing
-Contributions are welcome! If you'd like to contribute to Uniwaker, please follow these steps:
+Contributions are welcome! If you'd like to contribute to uniwaker, please follow these steps:
 
   * Fork the repository.
   * Create a new branch for your feature or bugfix.
@@ -17,7 +17,7 @@ Contributions are welcome! If you'd like to contribute to Uniwaker, please follo
   * Submit a pull request with a clear description of your changes.
 
 ## License
-Uniwaker is open-source software licensed under the MIT License.
+uniwaker is open-source software licensed under the MIT License.
 
 ## Acknowledgements
  [arp](https://github.com/mostlygeek/arp) - An simple easy-to-go arp implementation in golang
