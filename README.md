@@ -19,4 +19,4 @@ Contributions are welcome! If you'd like to contribute to uniwaker, please follo
 uniwaker is open-source software licensed under the MIT License.
 
 ## Acknowledgements
-* [arp](https://github.com/mostlygeek/arp) - An simple easy-to-go arp implementation in golang
+* [mostlygeek/arp](https://github.com/mostlygeek/arp) - An simple easy-to-go arp implementation in golang
