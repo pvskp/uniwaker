@@ -2,17 +2,18 @@ package sender
 
 import (
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"net"
 	"strings"
 )
 
-// CreatePacket creates a magic packet byte slice from a given MAC address.
+// createPacket creates a magic packet byte slice from a given MAC address.
 // The magic packet is used for waking up a remote device from sleep or power-off state.
 // It consists of a payload of 6 bytes (0xFF repeated 6 times) followed by 16 repetitions
 // of the MAC address bytes.
 // The resulting magic packet byte slice can be sent over the network to wake up the remote device.
-func CreatePacket(macAddress string) ([]byte, error) {
+func createPacket(macAddress string) ([]byte, error) {
 	repeatedMac := strings.Repeat(macAddress, 16)
 	macAddressBytes, err := hex.DecodeString(repeatedMac)
 
@@ -29,12 +30,12 @@ func CreatePacket(macAddress string) ([]byte, error) {
 	return magicPacket, nil
 }
 
-// CreateSocket creates a UDP socket connection to the specified host and port.
+// createSocket creates a UDP socket connection to the specified host and port.
 // The returned net.Conn interface can be used to send data over the network.
 // The host parameter should be a hostname or an IP address, and the port parameter
 // should be a string representing the port number.
 // Example usage: connection, err := CreateSocket("192.168.1.100", "9")
-func CreateSocket(host string, port string) (net.Conn, error) {
+func createSocket(host string, port string) (net.Conn, error) {
 	address := host + ":" + port
 	connection, err := net.Dial("udp", address)
 
@@ -47,13 +48,21 @@ func CreateSocket(host string, port string) (net.Conn, error) {
 	return connection, nil
 }
 
+func createMagicSocket(host string) (net.Conn, error) {
+	return createSocket(host, "9")
+}
+
 // SendMessage sends the magic packet byte slice over the network using the provided
 // net.Conn connection. It returns true if the message was sent successfully, otherwise false.
-func SendMessage(connection net.Conn, magicPacket []byte) bool {
-	_, err := connection.Write(magicPacket)
+func SendMessage(macAddress, host string) (err error) {
+	connection, err := createMagicSocket(host)
+	magicPacket, err := createPacket(macAddress)
 	if err != nil {
-		return false
+		err = errors.New("Could not create socket to host")
 	}
-
-	return true
+	_, err = connection.Write(magicPacket)
+	if err != nil {
+		err = errors.New("Could not send Magic Packet")
+	}
+	return
 }
