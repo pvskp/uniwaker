@@ -7,24 +7,33 @@ import (
 	"os/exec"
 	"strings"
 	"sync"
+
 	"github.com/mostlygeek/arp"
 )
 
-type FoundDevices struct {
-  ip string
-  macAddress string
+type device struct {
+	ip         string
+	macAddress string
 }
 
-func GetDevices() []FoundDevices {
+func (d device) Ip() string {
+	return d.ip
+}
+
+func (d device) MacAddress() string {
+	return d.macAddress
+}
+
+func GetDevices() (ipList []device) {
 	// Get the local IP address
 	ip := getLocalNetworkIP()
 
 	// Get the IP subnet by removing the last octet of the IP address
-  fmt.Println(ip)
 	subnet := getSubnet(ip)
 
 	// Create a wait group to synchronize the goroutines
 	var wg sync.WaitGroup
+	defer wg.Wait()
 
 	// Iterate through all possible IP addresses in the subnet
 	for i := 1; i < 255; i++ {
@@ -36,17 +45,14 @@ func GetDevices() []FoundDevices {
 			ip := fmt.Sprintf("%s.%d", subnet, i)
 
 			// Ping the IP address to check if it's online
-      if ip != "nil" {
-        if ping(ip) {
-          fmt.Println("Device found:", ip)
-          fmt.Println("MacAddress found:", arp.Search(ip))
-        }
-      }
+			if ip != "nil" {
+				if ping(ip) {
+					ipList = append(ipList, device{ip, arp.Search(ip)})
+				}
+			}
 		}(i)
 	}
-
-	// Wait for all goroutines to finish
-	wg.Wait()
+	return
 }
 
 // getLocalNetworkIP retrieves the local IPv4 address of the network interface that is currently up and not a loopback interface.
@@ -88,7 +94,7 @@ func getLocalNetworkIP() string {
 			}
 		}
 	}
-  return ""
+	return ""
 }
 
 // getSubnet takes an IPv4 address as input and returns the subnet address by removing the last octet.

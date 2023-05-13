@@ -1,4 +1,4 @@
-module github.com/pvskp/Universal-Magic-Waker
+module uniwaker
 
 go 1.17
 
